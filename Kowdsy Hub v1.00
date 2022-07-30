@@ -1,0 +1,98 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Kowdsy Hub", "Midnight")
+
+    local Main = Window:NewTab("Main")
+        local MainSection = Main:NewSection("Welcome! Thanks For Using Kowdsy Hub!")
+            MainSection:NewLabel("Remember to always use an alt when cheating!")
+            MainSection:NewLabel("Script made by zaxqk, sub to Kowdsy on YT!")
+            MainSection:NewLabel("If you have any questions, join Kowdsy's discord!")
+            MainSection:NewLabel("https://discord.gg/NUUTZbfRf2")
+            
+
+    local Player = Window:NewTab("Player")
+        local PlayerSection = Player:NewSection("Player")
+
+        PlayerSection:NewButton("No Fall Damage", "You won't take any damage when you fall", function()
+            local ReplicatedFirst = game:GetService("ReplicatedFirst")
+
+            local ClientModules = ReplicatedFirst.ClientModules
+
+            local Old = ClientModules.Old
+
+            local framework = Old.framework
+
+            local network = require(framework.network)
+
+            local Old = network.send
+            network.send = function(Self, Name, ...)
+	        local Arguments = {...}
+	        if Name == "falldamage" then
+		    return
+	        end
+	        return Old(Self, Name, unpack(Arguments))
+            end
+        end)
+            
+    local Visuals = Window:NewTab("Visuals")
+        local VisualsSection = Visuals:NewSection("Esp")
+
+        VisualsSection:NewButton("Esp", "Lets you see players through walls", function()
+            loadstring(game:HttpGet("https://pastebin.com/raw/nF4pQUn6", true))()
+        end)
+            
+    local Scripts = Window:NewTab("Scripts")
+        local ScriptsSection = Scripts:NewSection("Script Hub")
+            
+    local Misc = Window:NewTab("Misc")
+        local MiscSection = Misc:NewSection("Misc")
+
+        MiscSection:NewButton("No Recoil", "Reduces your gun's recoil to 0", function()
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+            local GunModules = ReplicatedStorage.GunModules
+
+            for _, Value in ipairs(GunModules:GetChildren()) do
+	        local ModuleScript = require(Value)
+	        for Index, Value2 in pairs(ModuleScript) do
+		    if typeof(Value2) == "Vector3" then
+			ModuleScript[Index] = Vector3.new()
+		    end
+	        end
+	        if ModuleScript.hipfirespreadrecover then
+		    ModuleScript.hipfirespreadrecover = tick()
+	        end
+            end
+        end)
+
+            MiscSection:NewToggle("Hitbox Expander", "Makes enemies hitbox size bigger", function(state)
+                if state then
+                    local Players = workspace.Players
+ 
+                    local OldIndex = nil
+                     
+                    OldIndex = hookmetamethod(Players, "__index", function(Self, Key)
+                        if not checkcaller() and tostring(Self) == "Head" and Key == "Size" then
+                            return Vector3.new(10, 10, 10)
+                        end
+                        return OldIndex(Self, Key)
+                    end)
+                else
+                    local Players = workspace.Players
+ 
+                    local OldIndex = nil
+                     
+                    OldIndex = hookmetamethod(Players, "__index", function(Self, Key)
+                        if not checkcaller() and tostring(Self) == "Head" and Key == "Size" then
+                            return Vector3.new(0, 0, 0)
+                        end
+                        return OldIndex(Self, Key)
+                    end)
+                end
+            end)
+            
+    local Settings = Window:NewTab("Settings")
+        local SettingsSection = Settings:NewSection("Settings")
+
+            SettingsSection:NewKeybind("Hide GUI", "Press RightShift to hide/open GUI", Enum.KeyCode.RightShift, function()
+                Library:ToggleUI()
+            end)
